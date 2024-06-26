@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>command stacker yeyey</title>
+    <style>
+        body {
+            overflow: hidden;
+        }
+
+        #list {
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 5%;
+            position: absolute;
+            overflow-x: hidden;
+            resize: none;
+            font-size: large;
+        }
+
+        #result {
+            left: 8px;
+            right: 20%;
+            bottom: 8px;
+            height: 20px;
+            position: absolute;
+            resize: none;
+            font-size: large;
+        }
+
+        #start {
+            left: calc(8px + 80%);
+            right: 8px;
+            bottom: 8px;
+            height: 27px;
+            position: absolute;
+            font-size: large;
+        }
+
+    </style>
+</head>
+
+<body>
+    <textarea id="list">execute align xyz positioned ~1.5 ~-1 ~0.5 run summon minecraft:armor_stand ~ ~-1 ~ {NoGravity:1b,Tags:["structure_build_temp"],Invisible:1b}
+execute at @e[tag=structure_build_temp] run ...
+kill @e[tag=structure_build_temp]</textarea>
+    <textarea id="result"></textarea>
+    <button id="start">Stack</button>
+    <script>
+        var start = "/summon minecraft:falling_block ~ ~0.5 ~ {BlockState:{Name:\"minecraft:activator_rail\",Properties:{powered:\"false\",shape:\"north_south\",waterlogged:\"false\"}},Motion:[0.0d,0.315d,0.0d],Passengers:[{BlockState:{Name:\"minecraft:redstone_block\"},Time:1,id:\"minecraft:falling_block\"}"
+        var end = ",{Command:\'/setblock ~ ~-2 ~ minecraft:repeating_command_block[conditional=false,facing=north]{Command:\"/fill ~ ~ ~ ~ ~2 ~ minecraft:air\",auto:1b} destroy\',id:\"minecraft:command_block_minecart\"},{Command:\"/kill @e[distance=..1.0,type=minecraft:command_block_minecart]\",id:\"minecraft:command_block_minecart\"}],Time:1}"
+        var firstPart = ",{Command:\""
+        var lastPart = "\",id:\"minecraft:command_block_minecart\"}"
+
+        var button = document.getElementById("start")
+        var commands = document.getElementById("list")
+        var resultarea = document.getElementById("result")
+
+        function format(string) {
+            return string.replaceAll("\"", "\\\"")
+        }
+
+        function joinCmds(strings) {
+            let parts = []
+            strings.forEach((e) => {
+                console.log(firstPart + format(e) + lastPart)
+                parts.push(firstPart + format(e) + lastPart)
+            })
+            return start + parts.join('') + end
+        }
+
+        button.onclick = function () {
+            let result = joinCmds(commands.value.split('\n'))
+            console.log(commands.value)
+            resultarea.innerHTML = result
+        }
+    </script>
+</body>
+
+</html>
